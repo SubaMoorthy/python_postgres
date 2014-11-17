@@ -30,9 +30,14 @@ class linksSpider(scrapy.Spider):
 
         table2 = response.xpath('//table//table//table//table//table//table')
         trs = table2.xpath("//tr[@class='tms']")
-        attrs = ["OverallPts", "OverallGP", "OverallW", "OverallL", "OverallT", "OverallGF", "OverallGA", "HomeW", "HomeL", "HomeT", "HomeGF", "HomeGA", "AwayW", "AwayL", "AwayT", "AwayGF", "AwayGA"]
+        attrs = ["OverallPts", "OverallGP", "OverallW", "OverallL", "OverallT", "OverallGF", "OverallGA", "HomeW",
+                 "HomeL", "HomeT", "HomeGF", "HomeGA", "AwayW", "AwayL", "AwayT", "AwayGF", "AwayGA"]
         for tr in trs:
             team = USLTeam()
+            teamname = tr.xpath("td[@class = 'stub']/a/text()")[0].extract()
+            teamname = string.replace(teamname, "\r\n", "")
+            teamname = teamname.strip()
+            team['TeamName'] = teamname
             i = 0
             for td in tr.xpath("td[not (@class)]/text()"):
                 team[attrs[i]] = td.extract()

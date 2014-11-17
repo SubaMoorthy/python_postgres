@@ -44,6 +44,7 @@ class USLPlayerStat(scrapy.Item):
 
 
 class USLTeam(scrapy.Item):
+    TeamName = scrapy.Field()
     OverallPts = scrapy.Field()
     OverallGP = scrapy.Field()
     OverallW = scrapy.Field()
