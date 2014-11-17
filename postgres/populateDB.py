@@ -4,6 +4,9 @@ from psycopg2.extras import RealDictRow
 import string
 
 
+player_spider_names = [ 'NASLPlayer1', 'NASLPlayer2','SBNationPlayer' , 'USLPlayerStat' , 'USLPlayerRos']
+nasl_spiders = [ 'NASLPlayer1', 'NASLPlayer2']
+
 integer_values = ['duplicate','weight', 'yellow', 'red', 'assist', 'age', 'fouls', 'shots', 'games_played', 'goals', 'minutes', 'points', 'register_num',  'wins', 'losses','ties','games_for',
                    'games_against', 'home_wins','home_losses','home_ties','home_games_for','home_games_against','away_wins','away_losses', 'away_ties','away_games_for','away_games_against',
                    'home_games_played', 'home_points', 'away_games_played', 'away_points', 'goal_difference', 'home_goal_difference', 'away_goal_difference', 'streaks', 'home_streaks',
@@ -12,7 +15,6 @@ float_values = ['height']
 
 def change_dict_key(data, name):
     row  =  dict(data)
-    #print(row)
     for key in row.keys():
         try:
             new_key = key.replace(key,custom_dictionary[key])
@@ -29,7 +31,7 @@ def change_dict_key(data, name):
     clean_rowdata(row, name)
 
 def clean_rowdata(row, name):
-    if row['source'] == 'NASLPlayer' or row['source'] == 'SBNationPlayer' or row['source'] == 'USLPlayerStat' or row['source'] == 'USLPlayerRos':
+    if row['source'] in player_spider_names:
         if  'full_name' in row:
             row['first_name'] = ''
             row['last_name'] = ''
@@ -83,7 +85,21 @@ def clean_rowdata(row, name):
 
 def identify_duplicates(row_data):
     connect_DB();
-    if row_data['source'] == 'NASLPlayer' or row_data['source'] == 'SBNationPlayer' or row_data['source'] == 'USLPlayerStat' or row_data['source'] == 'USLPlayerRos':
+    if row_data['source'] in nasl_spiders: 
+        cursor.execute("SELECT * FROM PLAYER WHERE LAST_NAME = '"+ row_data['last_name']+"'")
+        duplicate_rows = cursor.fetchall()
+        #print(cursor.rowcount)
+        if cursor.rowcount == 1:
+            for row in duplicate_rows:
+                if row['source'] == 'NASLPlayer2' and row_data['source'] == 'NASLPlayer1':
+                    update_cursor.execute("update  player  set goals =  %s   , assist =  %s , yellow = %s , red =  %s  where source = %s and last_name = %s" , 
+                                          (row_data['goals'] , row_data['assist'],  row_data['yellow'],  row_data ['red'], row['source'], row['last_name']  ))
+                elif row['source'] == 'NASLPlayer1' and row_data['source'] == 'NASLPlayer2':
+                    update_cursor.execute("update  player  set first_name =  %s   , full_name = %s,  points =  %s , date_of_birth = %s , country =  %s  where source = %s and last_name = %s" , 
+                                          (row_data['first_name'] , row_data['full_name'], row_data['points'],  row_data['date_of_birth'],  row_data ['country'], row['source'], row['last_name']  )) 
+        else:
+            insert_into_db(row_data)           
+    if row_data['source'] in ['SBNationPlayer' , 'USLPlayerStat' , 'USLPlayerRos']:
         cursor.execute("SELECT * FROM PLAYER WHERE FULL_NAME = '"+ row_data['full_name']+"'")
         duplicate_rows = cursor.fetchall()
         #print(cursor.rowcount)
@@ -158,7 +174,7 @@ def insert_into_db(row_data):
     #print(column_data) 
     print(row_data)
     'insert from python list into postgres'
-    if row_data['source'] == 'NASLPlayer' or row_data['source'] == 'SBNationPlayer'  or row_data['source'] == 'USLPlayerStat' or row_data['source'] == 'USLPlayerRos':
+    if row_data['source'] in player_spider_names:
         #print('insert into db');
         cursor.execute("INSERT INTO PLAYER("+column_name+")  VALUES (" + column_data+ ")", row_data)
     elif row_data['source'] == 'NASLTeam' or row_data['source'] == 'USLTeam' or row_data['source'] == 'WhoScored':

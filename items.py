@@ -64,13 +64,21 @@ class USLTeam(scrapy.Item):
     AwayGA = scrapy.Field()
 
 
-class NASLPlayer(scrapy.Item):
+class NASLPlayer1(scrapy.Item):
     Player = scrapy.Field()
     Team = scrapy.Field()
     Gls = scrapy.Field()
     Ast = scrapy.Field()
     Yel = scrapy.Field()
     Red = scrapy.Field()
+
+
+class NASLPlayer2(scrapy.Item):
+    Name = scrapy.Field()
+    Team = scrapy.Field()
+    P = scrapy.Field()
+    DateofBirth = scrapy.Field()
+    Country = scrapy.Field()
 
 
 class NASLTeam(scrapy.Item):
