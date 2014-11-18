@@ -33,6 +33,7 @@ def change_dict_key(data, name):
 def clean_rowdata(row, name):
     if row['source'] in player_spider_names:
         if  'full_name' in row:
+            row['full_name'] = row['full_name'].replace("'", "''")
             row['first_name'] = ''
             row['last_name'] = ''
             row['middle_name'] = ''
@@ -50,18 +51,20 @@ def clean_rowdata(row, name):
         else:
             row['full_name'] = '' 
             if 'first_name' in row:
+                row['first_name'] = row['first_name'].replace("'", "  ''  ")
                 row['full_name'] += row['first_name'] + " "
             else:
                 row['first_name'] = '' 
             if 'middle_name' in row:
+                row['middle_name'] = row['middle_name'].replace("'", "  ''  ")
                 row['full_name'] += row['middle_name'] + " "
             else:
                 row['middle_name'] = ''
             if 'last_name' in row:
+                row['last_name'] = row['last_name'].replace("'", "  ''  ")
                 row['full_name'] += row['last_name'] + " "
             else:
                 row['last_name'] = ''
-                     
     for key in row:
         #print(key, type(key))
         if  key in integer_values:
@@ -75,10 +78,7 @@ def clean_rowdata(row, name):
                 for c in  row[key]:
                     if c in string.ascii_letters or c in string.punctuation and c != '.':  
                         row[key] = row[key].replace(c, "")     
-        elif type(row[key]) == str:
-            for c in  row[key]:
-                if  c in string.punctuation and c != '.' and c!= ',':  
-                    row[key] = row[key].replace(c, "")
+                    
     change_dataTypes(row)
     identify_duplicates(row)
    
