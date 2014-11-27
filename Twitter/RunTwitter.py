@@ -52,7 +52,7 @@ try:
     con.cursor_factory = RealDictRow
     cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
     insert_cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
-    cur.execute("SELECT * FROM player")
+    cur.execute("SELECT * FROM player where twitter =  true")
     actors = cur.fetchall()
 except Exception, e:
     print "Error %s" % e

@@ -23,7 +23,7 @@ def main():
 		con = psycopg2.connect(conn_string)
 		con.cursor_factory = RealDictRow
 		cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
-		cur.execute("SELECT * FROM player")
+		cur.execute("SELECT * FROM player where facebook = true")
 		playerList = cur.fetchall()
 	except Exception, e:
 		print "Error %s" % e
