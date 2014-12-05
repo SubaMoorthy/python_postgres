@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @task.name %>
+</p>
+
+<p>
+  <strong>Frequency:</strong>
+  <%= @task.frequency %>
+</p>
+
+<p>
+  <strong>Month:</strong>
+  <%= @task.month %>
+</p>
+
+<p>
+  <strong>Day of week:</strong>
+  <%= @task.day_of_week %>
+</p>
+
+<p>
+  <strong>Day of month:</strong>
+  <%= @task.day_of_month %>
+</p>
+
+<p>
+  <strong>Hour:</strong>
+  <%= @task.hour %>
+</p>
+
+<p>
+  <strong>Command:</strong>
+  <%= @task.command %>
+</p>
+
+<p>
+  <strong>Folder:</strong>
+  <%= @task.folder%>
+</p>
+
+<%= link_to 'Edit', edit_task_path(@task) %> |
+<%= link_to 'Back', tasks_path %>
