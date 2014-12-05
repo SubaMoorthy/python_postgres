@@ -10,17 +10,23 @@ def insert_player_data(Position,Player_Name,Club,Age,Heightin,Heightstr,Weight,C
     global conn,cur
     try:
         connect_DB()
-        sq = "insert into player (position_1,full_name,age,heightin,height,weight,country,status,source) values ( '"+Position+"','"+Player_Name+"',"+Age+",'"+Heightin.replace("'",",")+"',"+Heightstr+","+Weight+",'"+Country+"','"+Status+"','mls' )"
+        Player_Name = Player_Name.replace("'", "  ''  ")
+        Club = Club.replace("'", "  ''  ")
+        if Weight == '':
+           sq = "insert into player (position_1,full_name,age,heightin,height,country,status,source) values ( '"+Position+"','"+Player_Name+"',"+Age+",'"+Heightin.replace("'",",")+"',"+Heightstr+",'"+Country+"','"+Status+"','mls' )"
+        else:   
+            sq = "insert into player (position_1,full_name,age,heightin,height,weight,country,status,source) values ( '"+Position+"','"+Player_Name+"',"+Age+",'"+Heightin.replace("'",",")+"',"+Heightstr+","+Weight+",'"+Country+"','"+Status+"','mls' )"
         cur.execute(sq)
         conn.commit()
     except:
-        traceback.print_exc(file=sys.stdout)
-        print("data ingestion failure!")
+        return
+        #traceback.print_exc(file=sys.stdout)
+        #print("data ingestion failure!")
 
 #update database doesn't need to commit
 
 def connect_DB():
-    CONFIG_FILE = '../Scheduler/config.cfg'
+    CONFIG_FILE = 'C:\Users\Suba\workspace\webcrawler_pro\webcrawler\Scheduler\config.cfg'
     DB_INFO_SECTION = 'DbInfo'
     config = ConfigParser.ConfigParser()
 
@@ -37,8 +43,8 @@ def connect_DB():
         cur = conn.cursor()#        s="select * from player"#        cur.execute(s)
         return True
     except:
-        traceback.print_exc(file=sys.stdout)
-        print "I am unable to connect to the database"
+        #traceback.print_exc(file=sys.stdout)
+        #print "I am unable to connect to the database"
         return False
 
 def writefile(jfilename,jstr):
@@ -65,6 +71,8 @@ def main():
         	return True
         
         soup = BeautifulSoup(handle, "html5lib")
+        if (not(soup.find("a",   attrs={"title": "Go to next page"}))):
+            return
     
         for player in soup.find("table").find("tbody").find_all("tr"):
             #print(player)

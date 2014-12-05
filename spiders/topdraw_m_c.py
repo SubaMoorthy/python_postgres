@@ -12,16 +12,18 @@ def insert_player_data(Position,Player_Name,Gender,College,Division,Conference):
     global conn,cur
     try:
         connect_DB()
-        sq = "insert into player (position_1,full_name,gender,Division,Conference,source) values ( '"+Position+"','"+Player_Name+"','"+Gender+"','"+Division+"','"+Conference+"','topdrawersoccer' )"
+        Player_Name = Player_Name.replace("'", "  ''  ")
+        sq = "insert into player (position_1,full_name,gender,Division,Conference,source) values ( '"+Position+"','"+Player_Name+"','"+Gender+"','"+Division+"','"+Conference+"','topdrawer' )"
         cur.execute(sq)
         conn.commit()
     except:
-        traceback.print_exc(file=sys.stdout)
-        print("data ingestion failure!")
+        return
+        #traceback.print_exc(file=sys.stdout)
+        #print("data ingestion failure!")
 
 
 def connect_DB():
-    CONFIG_FILE = '../Scheduler/config.cfg'
+    CONFIG_FILE = 'C:\Users\Suba\workspace\webcrawler_pro\webcrawler\Scheduler\config.cfg'
     DB_INFO_SECTION = 'DbInfo'
     config = ConfigParser.ConfigParser()
 
@@ -38,8 +40,8 @@ def connect_DB():
         cur = conn.cursor()
         return True
     except:
-        traceback.print_exc(file=sys.stdout)
-        print "I am unable to connect to the database"
+        #traceback.print_exc(file=sys.stdout)
+        #print "I am unable to connect to the database"
         return False
 
 
@@ -55,7 +57,6 @@ def craw_page(page_url):
     try:
         handle = urllib2.urlopen(req).read();
     except IOError, e:
-        print "maybe this page is the end."
         return False
     
     soup = BeautifulSoup(handle, "html5lib")
@@ -64,7 +65,7 @@ def craw_page(page_url):
     try:
         prows=soup.find("table").find("tbody").find_all("tr")
         if (prows is None) or (len(prows)==0):
-            print("number of rows is 0, return False here.")##########################
+            #print("number of rows is 0, return False here.")##########################
             return False
     except:
         return False
@@ -82,13 +83,6 @@ def craw_page(page_url):
         Division = attlist[4].string
         Conference = attlist[5].string
     
-        print(Position)
-        print(Player_Name)
-        print(Gender)
-        print(College)
-        print(Division)
-        print(Conference)
-        print("\n")
 
 #        f.write(("{\"Position\":\""+Position+"\",\"PlayerName\":\""+Player_Name+"\",\"Gender\":\""+Gender+"\",\"College\":\""+College+"\",\"Division\":\""+Division+"\",\"Conference\":\""+Conference+"\"},").encode('utf8'))
 
@@ -111,9 +105,7 @@ def main():
             purl = "http://www.topdrawersoccer.com/search/?area=collegeplayer&genderId=m&divisionId="+str(j)+"&pageNo="+str(i)
             if(not(craw_page(purl))):
                 break
-            print("\nCollege(M)")
-            print("div = "+str(j))
-            print("page = "+str(i)+"\n")
+
             i=i+1
     i=0
 
@@ -153,7 +145,7 @@ if __name__ == '__main__':
     except:
         
         traceback.print_exc(file=sys.stdout)
-        print("something is wrong while crawling web page. Incomplete Json file ends")
+
 #        
 #        if not(f.closed):
 #            f.close()

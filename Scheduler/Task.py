@@ -4,7 +4,7 @@ FREQ_HOURLY = "HOURLY"
 FREQ_WEEKLY = "WEEKLY"
 
 class Task:
-	def __init__(self, task_id, name, frequency, month, day_of_week, day_of_month, hour, command):
+	def __init__(self, task_id, name, frequency, month, day_of_week, day_of_month, hour, command, folder):
 		self.name = name
 		self.frequency = frequency
 		self.month = month
@@ -13,6 +13,7 @@ class Task:
 		self.hour = hour
 		self.command = command
 		self.task_id = task_id
+		self.folder= folder
 	def to_string(self):
 		return_string = ""
 		return_string += "task_id = " + str(self.task_id)+ "\n"
@@ -23,4 +24,5 @@ class Task:
 		return_string += "day of week = " + str(self.day_of_week) + "\n"
 		return_string += "hour = " + str(self.hour) + "\n"
 		return_string += "command = " + self.command + "\n"
+		return_string += "folder= " + self.folder+ "\n"
 		return return_string

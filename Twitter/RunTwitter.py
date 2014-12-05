@@ -52,7 +52,7 @@ try:
     con.cursor_factory = RealDictRow
     cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
     insert_cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
-    cur.execute("SELECT * FROM player where twitter =  true")
+    cur.execute("SELECT * FROM players where twitter =  true")
     actors = cur.fetchall()
 except Exception, e:
     print "Error %s" % e
@@ -63,8 +63,8 @@ count=0
 
 for player in actors:
     try:
-        actor = player['full_name']
-        time.sleep(5)
+        actor = player['name']
+        #time.sleep(5)
         c=0
         others=[]
         users = api.search_users(actor)
@@ -78,7 +78,7 @@ for player in actors:
                 others.append(u.screen_name)
         if(others!=[]):
             for player in others: 
-                time.sleep(6)
+                #time.sleep(6)
                 user = api.get_user(player)
                 t=user.followers_count
                 #count1=count1+1
@@ -94,20 +94,20 @@ for player in actors:
          # print("exception happened!")
          continue           
 
-print " count of verified accounts : " , count
-print "    "
-print " count of unverified accounts : " , count1
-print "     "
-# print others
-# print "   "
-print myusers
-print "     "
-print otherusers
+# print " count of verified accounts : " , count
+# # print "    "
+# print " count of unverified accounts : " , count1
+# # print "     "
+# # # print others
+# # # print "   "
+# print myusers
+# # print "     "
+# print otherusers
      
      
-time.sleep(5)
+#time.sleep(5)
 for player in myusers:
-    time.sleep(6)
+    #time.sleep(6)
     user = api.get_user(player)    
     row_data = {}
     row_data['full_name'] = user.name
@@ -120,13 +120,13 @@ for player in myusers:
     row_data['website_URL'] = user.url   
     row_data['source'] = "twitter"
     identify_duplicates(row_data)
-    time.sleep(5)
-    timeline = api.user_timeline(screen_name=user.screen_name, include_rts=True, count=1)
+    #time.sleep(5)
+    timeline = api.user_timeline(screen_name=user.screen_name, include_rts=True, count=2)
+    #print timeline
     for tweet in timeline:
-        #print "some tweet"
         tweet_data = {}
         tweet_data['tweet_id'] = tweet.id
-        tweet_data['full_name'] = actor
+        tweet_data['full_name'] = user.name
         tweet_data['tweet'] = tweet.text
         tweet_data['created'] = tweet.created_at
         tweet_data['retweet_count'] = tweet.retweet_count
@@ -135,10 +135,10 @@ for player in myusers:
         tweet_data['source']  = 'twitter_tweets'
         identify_duplicates(tweet_data)
         
-time.sleep(5)
+#time.sleep(5)
 for player in otherusers:
-    time.sleep(6)
-    user = api.get_user(player)    
+    #time.sleep(6)
+    user = api.get_user(player)  
     row_data = {}
     row_data['full_name'] = user.name
     row_data['screen_name'] = user.screen_name
@@ -150,8 +150,8 @@ for player in otherusers:
     row_data['website_URL'] = user.url   
     row_data['source'] = "twitter"
     identify_duplicates(row_data)
-    time.sleep(5)
-    timeline = api.user_timeline(screen_name=user.screen_name, include_rts=True, count=1)
+    #time.sleep(5)
+    timeline = api.user_timeline(screen_name=user.screen_name, include_rts=True, count=2)
     for tweet in timeline:
         #print "some tweet"
         tweet_data = {}

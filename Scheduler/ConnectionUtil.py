@@ -2,13 +2,12 @@ import ConfigParser
 import psycopg2
 import Util
 
-CONFIG_FILE = 'config.cfg'
 DB_INFO_SECTION = 'DbInfo'
 
-def get_connection():
+def get_connection(config_path):
 	config = ConfigParser.ConfigParser()
 
-	config.read(CONFIG_FILE)
+	config.read(config_path)
 
 	host = config.get(DB_INFO_SECTION, 'host')
 	port = config.get(DB_INFO_SECTION, 'port')

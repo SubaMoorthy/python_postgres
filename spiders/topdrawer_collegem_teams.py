@@ -10,6 +10,7 @@ def insert_team_data(club,opp,g,ga,sh,sog,sa,fo,co,yc,rc,att):
     global conn,cur
     try:
         connect_DB()
+        club = club.replace("'", "  ''  ")
         sq = "insert into team (team_name,goals,shots,r_shots_on_goals,yellow,red,source) values ( '"+club+"',"+g+","+sh+","+sog+","+yc+","+rc+",'topdrawer')"
         cur.execute(sq)
         conn.commit()
@@ -20,7 +21,7 @@ def insert_team_data(club,opp,g,ga,sh,sog,sa,fo,co,yc,rc,att):
 #update database doesn't need to commit
 
 def connect_DB():
-    CONFIG_FILE = '../Scheduler/config.cfg'
+    CONFIG_FILE = 'C:\Users\Suba\workspace\webcrawler_pro\webcrawler\Scheduler\config.cfg'
     DB_INFO_SECTION = 'DbInfo'
     config = ConfigParser.ConfigParser()
 
@@ -37,7 +38,7 @@ def connect_DB():
         cur = conn.cursor()#        s="select * from player"#        cur.execute(s)
         return True
     except:
-        traceback.print_exc(file=sys.stdout)
+        #traceback.print_exc(file=sys.stdout)
         #print "I am unable to connect to the database"
         return False
 
@@ -98,7 +99,8 @@ def crawl_schedule_score(club,scorelink):
                     score=scoreattrs[3].find("a").string+scoreattrs[3].find("a").next_sibling
                     #print("score: "+str(score))
                 except:
-                    print("score: "+str(score))
+                    return
+                    #print("score: "+str(score))
             
                 overall=scoreattrs[4].string#
                 #print("overall: "+str(overall))
@@ -132,7 +134,8 @@ def crawl_schedule_score(club,scorelink):
 #        ssf.close()
 
     except:
-        traceback.print_exc(file=sys.stdout)
+        return
+        #traceback.print_exc(file=sys.stdout)
         #############there is a problem, what if no record is added at all?????????????
 #        if not(ssf.closed):
 #            ssf.close()
@@ -250,7 +253,8 @@ def crawl_stat(club,statlink):
 #        sf.write("]}")
 #        sf.close()
     except:
-        traceback.print_exc(file=sys.stdout)
+        return
+        #traceback.print_exc(file=sys.stdout)
 #        if not(sf.closed):
 #            sf.close()
 #        

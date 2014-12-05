@@ -14,13 +14,14 @@ def insert_team_data(year,team_name,gp,g,a,sht,sog,fc,fs,off,ck,pkg,pka):
         cur.execute(sq)
         conn.commit()
     except:
-        traceback.print_exc(file=sys.stdout)
+        return
+        #traceback.print_exc(file=sys.stdout)
         #print("data ingestion failure!")
 
 #update database doesn't need to commit
 
 def connect_DB():
-    CONFIG_FILE = '../Scheduler/config.cfg'
+    CONFIG_FILE = 'C:\Users\Suba\workspace\webcrawler_pro\webcrawler\Scheduler\config.cfg'
     DB_INFO_SECTION = 'DbInfo'
     config = ConfigParser.ConfigParser()
 
@@ -37,7 +38,7 @@ def connect_DB():
         cur = conn.cursor()#        s="select * from player"#        cur.execute(s)
         return True
     except:
-        traceback.print_exc(file=sys.stdout)
+        #traceback.print_exc(file=sys.stdout)
         #print "I am unable to connect to the database"
         return False
 
@@ -107,7 +108,7 @@ if __name__ == '__main__':
         main()
         jstr=jstr.strip(",")+"]}"
     except:
-        print("Exception in the middle of crawling.")
+        #print("Exception in the middle of crawling.")
         jstr=jstr.strip(",")+"]}"
 
 

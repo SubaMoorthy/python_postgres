@@ -163,7 +163,7 @@ class postsParser:
 		newdate = date.replace(year=year,month=month)
 		timestamp = calendar.timegm(newdate.utctimetuple())
 		self.stamp = str(timestamp)
-		self.limit = 2
+		self.limit = 3
 		self.response =  self.graph.get_object(pageid+"/posts?limits="+str(self.limit))
 
 
@@ -190,9 +190,9 @@ class postsParser:
 				result['count'] = count
 				return result
 			data = self.response['data']
-			print "page#"+str(pageCount)
+			#print "page#"+str(pageCount)
 			for x in xrange(0,len(data)):
-				print "Post#"+str(x)
+				#print "Post#"+str(x)
 				item = data[x]
 				if 'id' not in item:
 					continue
@@ -216,15 +216,18 @@ class postsParser:
 						data_db['comments'] = itemdata['Comments']['messages']
 				insert_into_FBTable('Facebook_posts', data_db)
 				count = count+1
-			if last[0]:
-				break
-			link = self.getNext()
-			if link == None:
+			if(True):
 				end = True
-			else:
-				r = requests.get(link)
-				self.response = r.json()
-				pageCount += 1
+# 			if last[0]:
+# 				break
+# 			link = self.getNext()
+# 			if link == None:
+# 				end = True
+# 			else:
+# 				r = requests.get(link)
+# 				self.response = r.json()
+# 				pageCount += 1
+
 		result['post_ids'] = post_id
 		result['count'] = count
 		return result
@@ -233,7 +236,7 @@ class postParser:
 	"""get post data"""
 	def __init__(self,graph,postid):
 		self.graph = graph
-		self.limit = 25
+		self.limit = 3
 		self.postid = postid
 		self.response = self.graph.get_object(self.postid+"/comments?summary=1&filter=toplevel&limits="+str(self.limit))
 		self.date = datetime.utcnow()
@@ -282,12 +285,13 @@ class postParser:
 				for x in xrange(0,len(data)):
 					if 'message' in data[x]:
 						messages.append(data[x]['message'])
-			link = self.getNext()
-			if link == None:
-				end = True
-			else:
-				r = requests.get(link)
-				self.response = r.json()
+			end = True
+# 			link = self.getNext()
+# 			if link == None:
+# 				end = True
+# 			else:
+# 				r = requests.get(link)
+# 				self.response = r.json()
 		result['messages'] = messages
 		return result
 

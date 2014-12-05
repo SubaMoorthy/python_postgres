@@ -23,15 +23,15 @@ def main():
 		con = psycopg2.connect(conn_string)
 		con.cursor_factory = RealDictRow
 		cur = con.cursor(cursor_factory = psycopg2.extras.DictCursor)
-		cur.execute("SELECT * FROM player where facebook = true")
+		cur.execute("SELECT * FROM players where facebook = true")
 		playerList = cur.fetchall()
 	except Exception, e:
 		print "Error %s" % e
 		sys.exit(1)
 
 	for player in playerList:
-		name = player['full_name']
-		team = player['team_name']
+		name = player['name']
+		team =  None
 		searchAgent = getFacebookData.SearchParser(graph,name,team)
 		pageChecker = getFacebookData.correctPageChecker(graph)
 		find = False
@@ -54,7 +54,7 @@ def main():
 						find = True
 						break
 		if not find:
-			print "Cann't find Player"
+			#print "Cann't find Player"
 			continue
 		pageAgent = getFacebookData.pageParser(graph,correctId)
 		pageInfo = pageAgent.parse()
@@ -77,7 +77,7 @@ def main():
 	
 def insert_into_FBTable(tablename, result):
 	row_data =  result
-	print (row_data)
+	#print (row_data)
 	column_data = ''
 	column_name = ''
 	for key in row_data:
@@ -86,13 +86,9 @@ def insert_into_FBTable(tablename, result):
         #print('end')
 	column_data = column_data[0:-1]
 	column_name = column_name[0:-1]
-	print(column_data)
 	connectDB()
 	if  tablename == "facebook":
-		print tablename
-		print result['facebook_id']
 		fb_cur.execute("SELECT *  FROM FACEBOOK WHERE FACEBOOK_ID = '" + result['facebook_id']+ "'")
-		print "done"
 		duplicate_rows = fb_cur.fetchall()
         #print(cursor.rowcount)
         if fb_cur.rowcount > 0:
